@@ -2,6 +2,7 @@ package cristinapalmisani.BEU2W3L1.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -33,6 +34,12 @@ public class ExceptionHandler {
         if (e.getErrorlist() != null)
             errorsMessages = e.getErrorlist().stream().map(err -> err.getDefaultMessage()).toList();
         return new ErrorPayloadWhithListDTO(e.getMessage(), new Date(), errorsMessages);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN) // 403
+    public ErrorPayload handleAccessDenied(AccessDeniedException ex) {
+        return new ErrorPayload("Il tuo ruolo non permette di accedere a questa funzionalità!", new Date());
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(MethodArgumentTypeMismatchException.class)

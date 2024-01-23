@@ -2,9 +2,7 @@ package cristinapalmisani.BEU2W3L1.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import cristinapalmisani.BEU2W3L1.config.EmailSender;
 import cristinapalmisani.BEU2W3L1.entities.User;
-import cristinapalmisani.BEU2W3L1.exception.BadRequestException;
 import cristinapalmisani.BEU2W3L1.exception.NotFoundException;
 import cristinapalmisani.BEU2W3L1.payloads.user.UserRequestDTO;
 import cristinapalmisani.BEU2W3L1.repositories.UserRepositoryDAO;
@@ -24,32 +22,16 @@ public class UserService {
     @Autowired
     UserRepositoryDAO userRepositoryDAO;
     @Autowired
-    private EmailSender emailSender;
-    @Autowired
     private Cloudinary cloudinary;
 
-    public User save(UserRequestDTO body){
-        userRepositoryDAO.findByUsername(body.username()).ifPresent(a -> {
-            throw new BadRequestException("Username " + a.getUsername() + " already exists");
-        });
-        userRepositoryDAO.findByEmail(body.email()).ifPresent(a -> {
-            throw new BadRequestException("User with email " + a.getEmail() + " already exists");
-        });
-        User user = new User();
-        user.setUsername(body.username());
-        user.setName(body.name());
-        user.setSurname(body.surname());
-        user.setEmail(body.email());
-        user.setPassword(body.password());
-        User saveUser = userRepositoryDAO.save(user);
-        emailSender.sendRegistrationEmail(saveUser);
-        return saveUser;
-    }
+
 
     public Page<User> getUsers(int page, int size, String sort) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sort));
         return userRepositoryDAO.findAll(pageable);
     }
+
+
 
     public User findById(UUID id) throws NotFoundException {
         return userRepositoryDAO.findById(id).orElseThrow(() -> new NotFoundException(id));
