@@ -51,7 +51,7 @@ public class AuthService {
         user.setSurname(body.surname());
         user.setEmail(body.email());
         user.setRole(Role.USER);
-        user.setPassword(body.password());
+        user.setPassword(bcrypt.encode(body.password()));
         User saveUser = userRepositoryDAO.save(user);
         emailSender.sendRegistrationEmail(saveUser);
         return saveUser;
