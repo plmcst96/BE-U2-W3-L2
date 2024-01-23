@@ -9,7 +9,7 @@ import cristinapalmisani.BEU2W3L1.services.DeviceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +24,7 @@ public class DeviceController {
     private DeviceService deviceService;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Device> getDevices(@RequestParam(defaultValue = "0") int page,
                                    @RequestParam(defaultValue = "5") int size,
                                    @RequestParam(defaultValue = "id") String orderBy){
@@ -32,6 +33,7 @@ public class DeviceController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public DeviceResponseDTO createdDevice(@RequestBody @Validated DeviceRequestDTO body, BindingResult validation){
         if (validation.hasErrors()){
             throw new BadRequestException(validation.getAllErrors());
@@ -51,6 +53,7 @@ public class DeviceController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Device findByIdAndUpdate(@PathVariable UUID id, @RequestBody @Validated DeviceRequestDTO body, BindingResult validation) {
         if (validation.hasErrors()) {
             throw new BadRequestException(validation.getAllErrors());
@@ -60,6 +63,7 @@ public class DeviceController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void findByIdAndDelete(@PathVariable UUID id) {
         try {
             deviceService.findByIdAnDelete(id);
@@ -69,26 +73,31 @@ public class DeviceController {
     }
 
     @GetMapping("/{deviceId}/assign/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Device assignUser(@PathVariable UUID deviceId, @PathVariable UUID userId) {
         return deviceService.assignUser(deviceId, userId);
     }
 
     @GetMapping("{id}/putinmaintenance")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Device putInMaintenance(@PathVariable UUID id) {
         return deviceService.putInMaintenance(id);
     }
 
     @GetMapping("{id}/setavailable")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Device putInAvailable(@PathVariable UUID id) {
         return deviceService.setAvailable(id);
     }
 
     @GetMapping("{id}/setdisused")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Device putInDisused(@PathVariable UUID id) {
         return deviceService.putInDisused(id);
     }
 
     @GetMapping("/{userId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Page<Device> getDeviceByUser(@PathVariable UUID userId,
                                         @RequestParam(defaultValue = "0") int page,
                                         @RequestParam(defaultValue = "5") int size,
