@@ -1,6 +1,7 @@
 package cristinapalmisani.BEU2W3L1.services;
 
 import cristinapalmisani.BEU2W3L1.config.EmailSender;
+import cristinapalmisani.BEU2W3L1.entities.Role;
 import cristinapalmisani.BEU2W3L1.entities.User;
 import cristinapalmisani.BEU2W3L1.exception.BadRequestException;
 import cristinapalmisani.BEU2W3L1.exception.UnauthorizeException;
@@ -46,6 +47,7 @@ public class AuthService {
         user.setName(body.name());
         user.setSurname(body.surname());
         user.setEmail(body.email());
+        user.setRole(Role.USER);
         user.setPassword(body.password());
         User saveUser = userRepositoryDAO.save(user);
         emailSender.sendRegistrationEmail(saveUser);

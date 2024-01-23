@@ -47,6 +47,7 @@ public class UserService {
         u.setName(body.name());
         u.setSurname(body.surname());
         u.setEmail(body.email());
+        u.setPassword(body.password());
         return userRepositoryDAO.save(u);
     }
 
