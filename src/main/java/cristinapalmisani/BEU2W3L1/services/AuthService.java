@@ -10,6 +10,7 @@ import cristinapalmisani.BEU2W3L1.payloads.user.UserRequestDTO;
 import cristinapalmisani.BEU2W3L1.repositories.UserRepositoryDAO;
 import cristinapalmisani.BEU2W3L1.security.JWTTools;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,10 +26,12 @@ public class AuthService {
 
     @Autowired
     private JWTTools jwtTools;
+    @Autowired
+    private PasswordEncoder bcrypt;
 
     public String authenticateUser(UserLoginDTO body) {
         User user = usersService.findByEmail(body.email());
-        if (body.password().equals(user.getPassword())) {
+        if (bcrypt.matches(body.password(), user.getPassword())) {
             return jwtTools.createToken(user);
         } else {
             throw new UnauthorizeException("Credenziali non valide!");
